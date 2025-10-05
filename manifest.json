@@ -9,7 +9,7 @@
     "storage"
   ],
   "host_permissions": [
-    "https://youtube-video-summariser-ganm.onrender.com"
+    "https://youtube-video-summariser-ganm.onrender.com/"
   ],
   "action": {
     "default_popup": "popup.html"
