@@ -19,5 +19,11 @@
       "matches": ["https://www.youtube.com/watch?v=*"],
       "js": ["content.js"]
     }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["summary.html"],
+      "matches": ["<all_urls>"]
+    }
   ]
 }

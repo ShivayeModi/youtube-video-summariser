@@ -44,9 +44,28 @@
       border-radius: 8px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       min-height: 50px;
+      max-height: 200px;
+      overflow-y: auto;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+    #open-in-tab-btn {
+      display: none; /* Hidden by default */
+      margin-top: 12px;
+      width: 100%;
+      padding: 8px;
+      border: none;
+      border-radius: 6px;
+      background-color: #d32f2f;
+      color: white;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    #open-in-tab-btn:hover {
+      background-color: #b71c1c;
     }
     .error-message {
       color: #d32f2f;
@@ -76,6 +95,7 @@
     <div id="summary">
       <div class="spinner"></div>
     </div>
+    <button id="open-in-tab-btn">Open In New Tab</button>
   </div>
   <script src="popup.js"></script>
 </body>
