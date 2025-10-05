@@ -56,7 +56,7 @@ function getTranscript() {
 
 function summarize(text) {
   return new Promise((resolve, reject) => {
-    const url = 'http://localhost:3000/get-summary';
+    const url = 'https://youtube-video-summariser-ganm.onrender.com/get-summary';
 
     fetch(url, {
       method: 'POST',
