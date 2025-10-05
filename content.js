@@ -35,10 +35,7 @@ function getTranscript() {
 
 function summarize(text) {
   return new Promise((resolve, reject) => {
-    // For local development, replace 'YOUR_GEMINI_API_KEY' with your actual key.
-    // For production, consider a build step to inject the key or use client-side storage.
-    const apiKey = 'YOUR_GEMINI_API_KEY'; 
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`;
+    const url = 'http://localhost:3000/get-summary';
 
     fetch(url, {
       method: 'POST',
@@ -46,17 +43,13 @@ function summarize(text) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: `Summarize the following YouTube video transcript:\n\n${text}`
-          }]
-        }]
+        transcript: text
       })
     })
     .then(response => response.json())
     .then(data => {
-      if (data.candidates && data.candidates[0].content.parts[0].text) {
-        resolve(data.candidates[0].content.parts[0].text);
+      if (data.summary) {
+        resolve(data.summary);
       } else {
         reject(new Error(data.error ? data.error.message : 'Could not summarize text.'));
       }
