@@ -1,14 +1,35 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'getSummary') {
-    getTranscript().then(transcript => {
-      summarize(transcript).then(summary => {
-        sendResponse({ summary: summary });
-      }).catch(error => {
-        sendResponse({ error: error.message });
-      });
-    }).catch(error => {
-      sendResponse({ error: error.message });
+    const videoId = new URLSearchParams(window.location.search).get('v');
+    if (!videoId) {
+      sendResponse({ error: 'Could not get YouTube video ID.' });
+      return;
+    }
+
+    const cacheKey = `summary_${videoId}`;
+
+    // Check cache first
+    chrome.storage.local.get([cacheKey], (result) => {
+      if (result[cacheKey]) {
+        // Cache hit
+        sendResponse({ summary: result[cacheKey] });
+      } else {
+        // Cache miss
+        getTranscript().then(transcript => {
+          summarize(transcript).then(summary => {
+            // Save to cache
+            chrome.storage.local.set({ [cacheKey]: summary }, () => {
+              sendResponse({ summary: summary });
+            });
+          }).catch(error => {
+            sendResponse({ error: error.message });
+          });
+        }).catch(error => {
+          sendResponse({ error: error.message });
+        });
+      }
     });
+
     return true; // Indicates that the response is sent asynchronously
   }
 });
