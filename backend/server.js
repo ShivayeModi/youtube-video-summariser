@@ -30,7 +30,7 @@ app.post('/get-summary', async (req, res) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `Summarize the following YouTube video transcript:\n\n${transcript}`
+                        text: `Summarize the following YouTube video transcript in plain text, without using any markdown or special formatting:\n\n${transcript}`
                     }]
                 }]
             })
