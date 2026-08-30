@@ -1,25 +1,3 @@
-function sanitizeHTML(html) {
-  const allowed = ['h2', 'h3', 'p', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'blockquote', 'br'];
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  function clean(node) {
-    for (const child of [...node.childNodes]) {
-      if (child.nodeType === 1) {
-        const tag = child.tagName.toLowerCase();
-        if (!allowed.includes(tag)) {
-          child.replaceWith(...child.childNodes);
-        } else {
-          [...child.attributes].forEach(a => child.removeAttribute(a.name));
-          clean(child);
-        }
-      } else if (child.nodeType === 3) {
-        // text node, keep as is
-      }
-    }
-  }
-  clean(doc.body);
-  return doc.body.innerHTML;
-}
-
 const summaryDiv = document.getElementById('summary');
 const openInTabBtn = document.getElementById('open-in-tab-btn');
 const statusDiv = document.getElementById('status');
@@ -41,7 +19,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   if (!tabs[0]?.url?.includes('youtube.com/watch')) {
     setStatus('Open a YouTube video to summarize', 'waiting');
-    summaryDiv.innerHTML = '';
+    summaryDiv.innerText = '';
     summaryDiv.classList.remove('spinner');
     return;
   }
@@ -49,13 +27,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   chrome.tabs.sendMessage(tabs[0].id, { type: 'getSummary' }, (response) => {
     if (chrome.runtime.lastError) {
       setStatus('Refresh the YouTube page and try again', 'error');
-      summaryDiv.innerHTML = '';
+      summaryDiv.innerText = '';
       summaryDiv.classList.remove('spinner');
       return;
     }
     if (response && response.summary) {
       chrome.storage.local.set({ summary: response.summary }, () => {
-        summaryDiv.innerHTML = sanitizeHTML(response.summary);
+        summaryDiv.innerText = response.summary;
         summaryDiv.classList.remove('spinner');
         openInTabBtn.style.display = 'block';
         setStatus('Done', 'done');
