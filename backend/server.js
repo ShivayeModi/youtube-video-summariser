@@ -26,8 +26,12 @@ app.post('/get-summary', async (req, res) => {
     }
 
     try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 60000);
+
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiApiKey}`, {
             method: 'POST',
+            signal: controller.signal,
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -39,6 +43,8 @@ app.post('/get-summary', async (req, res) => {
                 }]
             })
         });
+
+        clearTimeout(timeout);
         const data = await response.json();
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             res.json({ summary: data.candidates[0].content.parts[0].text });
@@ -47,7 +53,11 @@ app.post('/get-summary', async (req, res) => {
         }
     } catch (error) {
         console.error('Error summarizing transcript:', error);
-        res.status(500).json({ error: 'Failed to summarize transcript.' });
+        if (error.name === 'AbortError') {
+            res.status(504).json({ error: 'AI took too long. Try with a shorter video.' });
+        } else {
+            res.status(500).json({ error: 'Failed to summarize transcript.' });
+        }
     }
 });
 
