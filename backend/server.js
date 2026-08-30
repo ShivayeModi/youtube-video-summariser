@@ -49,9 +49,11 @@ app.post('/get-summary', async (req, res) => {
 
         clearTimeout(timeout);
         const data = await response.json();
+        console.log('Gemini response status:', response.status);
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             res.json({ summary: data.candidates[0].content.parts[0].text });
         } else {
+            console.log('Gemini response:', JSON.stringify(data).substring(0, 500));
             res.status(500).json({ error: 'Could not summarize text.' });
         }
     } catch (error) {
