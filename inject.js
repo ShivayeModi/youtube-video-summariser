@@ -1,20 +1,43 @@
 (() => {
   const capturedCaptions = {};
 
+  function formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m}:${s.toString().padStart(2, '0')}`;
+  }
+
   function parseXML(xml) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(xml, 'text/xml');
     const texts = doc.querySelectorAll('text');
-    return Array.from(texts).map(node => node.textContent).join(' ');
+    const segments = [];
+    let currentTime = 0;
+    for (const node of texts) {
+      const start = parseFloat(node.getAttribute('start')) || currentTime;
+      const text = node.textContent.trim();
+      if (text) {
+        segments.push(`[${formatTime(start)}] ${text}`);
+        currentTime = start;
+      }
+    }
+    return segments.join(' ');
   }
 
   function parseJSON3(json) {
     try {
       const data = typeof json === 'string' ? JSON.parse(json) : json;
-      return (data.events || []).map(e => {
-        const segs = e.segs || [];
-        return segs.map(s => s.utf8 || '').join('');
-      }).join(' ');
+      const segments = [];
+      for (const e of (data.events || [])) {
+        if (e.tStartMs != null && e.segs) {
+          const start = e.tStartMs / 1000;
+          const text = e.segs.map(s => s.utf8 || '').join('').trim();
+          if (text) {
+            segments.push(`[${formatTime(start)}] ${text}`);
+          }
+        }
+      }
+      return segments.join(' ');
     } catch {
       return null;
     }

@@ -38,7 +38,7 @@ app.post('/get-summary', async (req, res) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `Summarize this YouTube transcript in detail. Cover all key points, arguments, and conclusions mentioned. Write 5-7 paragraphs in plain text:\n\n${transcript}`
+                        text: `The following is a YouTube video transcript with timestamps like [0:00], [1:23], etc. Provide a detailed, well-organized summary organized by timestamps/topics. Cover all key points, arguments, and conclusions. Use the timestamps to structure the summary into clear sections:\n\n${transcript}`
                     }]
                 }],
                 generationConfig: {
