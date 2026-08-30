@@ -9,7 +9,8 @@
     "storage"
   ],
   "host_permissions": [
-    "https://youtube-video-summariser-ganm.onrender.com/"
+    "https://youtube-video-summariser-ganm.onrender.com/",
+    "https://www.youtube.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
@@ -18,6 +19,11 @@
     {
       "matches": ["https://www.youtube.com/watch?v=*"],
       "js": ["content.js"]
+    },
+    {
+      "matches": ["https://www.youtube.com/watch?v=*"],
+      "js": ["inject.js"],
+      "world": "MAIN"
     }
   ],
   "web_accessible_resources": [

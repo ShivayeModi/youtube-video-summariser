@@ -84,6 +84,29 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    #status {
+      font-size: 11px;
+      text-align: center;
+      color: #888;
+      margin-top: 10px;
+      min-height: 16px;
+    }
+    #status .dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .dot-waiting { background-color: #f57c00; }
+    .dot-loading { background-color: #1976d2; animation: pulse 1s infinite; }
+    .dot-done { background-color: #388e3c; }
+    .dot-error { background-color: #d32f2f; }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
@@ -91,11 +114,12 @@
     <div class="header">
       <h1>Video Summary</h1>
     </div>
-    <p class="transcript-notice">Please click on "Show Transcript" in the video description beforehand.</p>
+    <p class="transcript-notice">Ensure captions (CC) are enabled on the video.</p>
     <div id="summary">
       <div class="spinner"></div>
     </div>
     <button id="open-in-tab-btn">Open In New Tab</button>
+    <div id="status"></div>
   </div>
   <script src="popup.js"></script>
 </body>

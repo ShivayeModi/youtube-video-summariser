@@ -13,6 +13,10 @@ app.get('/', (req, res) => {
     res.send('Backend server is running.');
 });
 
+app.get('/ping', (req, res) => {
+    res.status(200).send('pong');
+});
+
 app.post('/get-summary', async (req, res) => {
     const { transcript } = req.body;
     const geminiApiKey = process.env.GEMINI_API_KEY;
