@@ -1,25 +1,23 @@
-function parseMarkdown(text) {
-  let html = text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-
-  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
-  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-  html = html.replace(/^- (.+)$/gm, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>');
-  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-  html = html.replace(/\n{2,}/g, '</p><p>');
-  html = html.replace(/\n/g, '<br>');
-  html = '<p>' + html + '</p>';
-  html = html.replace(/<p>\s*<(h2|h3|ul|blockquote)>/g, '<$1>');
-  html = html.replace(/<\/(h2|h3|ul|blockquote)>\s*<\/p>/g, '</$1>');
-  html = html.replace(/<p>\s*<\/p>/g, '');
-
-  return html;
+function sanitizeHTML(html) {
+  const allowed = ['h2', 'h3', 'p', 'strong', 'em', 'b', 'i', 'ul', 'ol', 'li', 'blockquote', 'br'];
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  function clean(node) {
+    for (const child of [...node.childNodes]) {
+      if (child.nodeType === 1) {
+        const tag = child.tagName.toLowerCase();
+        if (!allowed.includes(tag)) {
+          child.replaceWith(...child.childNodes);
+        } else {
+          [...child.attributes].forEach(a => child.removeAttribute(a.name));
+          clean(child);
+        }
+      } else if (child.nodeType === 3) {
+        // text node, keep as is
+      }
+    }
+  }
+  clean(doc.body);
+  return doc.body.innerHTML;
 }
 
 const summaryDiv = document.getElementById('summary');
@@ -57,7 +55,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     }
     if (response && response.summary) {
       chrome.storage.local.set({ summary: response.summary }, () => {
-        summaryDiv.innerHTML = parseMarkdown(response.summary);
+        summaryDiv.innerHTML = sanitizeHTML(response.summary);
         summaryDiv.classList.remove('spinner');
         openInTabBtn.style.display = 'block';
         setStatus('Done', 'done');
