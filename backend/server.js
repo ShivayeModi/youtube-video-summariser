@@ -38,11 +38,11 @@ app.post('/get-summary', async (req, res) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `Summarize this YouTube transcript in 2-3 short paragraphs. Plain text only:\n\n${transcript}`
+                        text: `Summarize this YouTube transcript in detail. Cover all key points, arguments, and conclusions mentioned. Write 5-7 paragraphs in plain text:\n\n${transcript}`
                     }]
                 }],
                 generationConfig: {
-                    maxOutputTokens: 512
+                    maxOutputTokens: 2048
                 }
             })
         });
