@@ -29,7 +29,7 @@ app.post('/get-summary', async (req, res) => {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 60000);
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${geminiApiKey}`, {
             method: 'POST',
             signal: controller.signal,
             headers: {
@@ -54,7 +54,7 @@ app.post('/get-summary', async (req, res) => {
             res.json({ summary: data.candidates[0].content.parts[0].text });
         } else {
             console.log('Gemini response:', JSON.stringify(data).substring(0, 500));
-            res.status(500).json({ error: 'Could not summarize text.' });
+            res.status(500).json({ error: data?.error?.message || 'Could not summarize text.' });
         }
     } catch (error) {
         console.error('Error summarizing transcript:', error);
