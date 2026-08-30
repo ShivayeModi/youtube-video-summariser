@@ -29,7 +29,7 @@ app.post('/get-summary', async (req, res) => {
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 60000);
 
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${geminiApiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`, {
             method: 'POST',
             signal: controller.signal,
             headers: {
@@ -38,9 +38,12 @@ app.post('/get-summary', async (req, res) => {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: `Summarize the following YouTube video transcript in plain text, without using any markdown or special formatting:\n\n${transcript}`
+                        text: `Summarize this YouTube transcript in 2-3 short paragraphs. Plain text only:\n\n${transcript}`
                     }]
-                }]
+                }],
+                generationConfig: {
+                    maxOutputTokens: 512
+                }
             })
         });
 

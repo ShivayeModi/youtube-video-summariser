@@ -94,7 +94,7 @@ function summarize(text) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        transcript: text.substring(0, 15000)
+        transcript: text.substring(0, 5000)
       })
     })
     .then(response => {
