@@ -17,6 +17,10 @@ app.get('/ping', (req, res) => {
     res.status(200).send('pong');
 });
 
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
 app.post('/get-summary', async (req, res) => {
     const { transcript } = req.body;
     const geminiApiKey = process.env.GEMINI_API_KEY;
